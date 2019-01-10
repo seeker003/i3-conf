@@ -1,0 +1,28 @@
+#!/usr/bin/env python3
+import subprocess
+import re
+
+acpi = subprocess.check_output('acpi', shell=True).strip().decode('utf-8')
+if acpi is '':
+    exit(0)
+
+is_charging = re.search('Charging', acpi)
+percentages = []
+for percentage in re.findall('(\d+)%', acpi):
+    percentages.append(percentage)
+
+output = ' / '.join(percentages)
+
+print(output)
+if is_charging:
+    color = '#00FF00'
+    print()
+    print(color)
+elif int(percentages[-1]) <= 25:
+    color = '#FF0000'
+    print()
+    print(color)
+elif is_charging is None:
+    color = '#FFFFFF'
+    print()
+    print(color)
